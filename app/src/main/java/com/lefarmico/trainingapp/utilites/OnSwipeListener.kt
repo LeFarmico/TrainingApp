@@ -1,19 +1,19 @@
+
 package com.lefarmico.trainingapp.utilites
 
 import android.content.Context
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import kotlin.math.abs
 import kotlin.math.absoluteValue
 
 open class OnSwipeListener(context: Context) : View.OnTouchListener {
 
-    private val gestureDetector : GestureDetector
+    private val gestureDetector: GestureDetector
 
-    companion object{
-        private val SWIPE_VELOCITY_THRESHOLD = 100
-        private val SWIPE_THRESHOLD = 100
+    companion object {
+        private const val swipeVelocityThreshold = 100
+        private const val swipeThreshold = 100
     }
 
     init {
@@ -21,39 +21,40 @@ open class OnSwipeListener(context: Context) : View.OnTouchListener {
     }
 
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+        v?.performClick()
         return gestureDetector.onTouchEvent(event)
     }
 
     private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
 
-
         override fun onDown(e: MotionEvent?): Boolean {
             return true
         }
 
-        override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
+        override fun onFling(
+            e1: MotionEvent?,
+            e2: MotionEvent?,
+            velocityX: Float,
+            velocityY: Float
+        ): Boolean {
             val diffX = e2?.x?.minus(e1?.x!!)
             val diffY = e2?.y?.minus(e1?.y!!)
-            if(diffX!!.absoluteValue > diffY!!.absoluteValue){
-                if(diffX.absoluteValue > SWIPE_THRESHOLD && velocityX.absoluteValue > SWIPE_VELOCITY_THRESHOLD){
+            if (diffX!!.absoluteValue > diffY!!.absoluteValue) {
+                if (diffX.absoluteValue > swipeThreshold && velocityX.absoluteValue > swipeVelocityThreshold) {
                     if (diffX > 0) {
                         onSwipeRight()
-                    }
-                    else
+                    } else
                         onSwipeLeft()
                 }
-            }else if(diffY!!.absoluteValue > diffX!!.absoluteValue){
-                if (diffY.absoluteValue > SWIPE_THRESHOLD && velocityY.absoluteValue > SWIPE_VELOCITY_THRESHOLD){
-                    if (diffY > 0){
+            } else if (diffY.absoluteValue > diffX.absoluteValue) {
+                if (diffY.absoluteValue > swipeThreshold && velocityY.absoluteValue > swipeVelocityThreshold) {
+                    if (diffY > 0) {
                         onSwipeDown()
-                    }else
+                    } else
                         onSwipeTop()
                 }
             }
-
             return true
-
-
         }
     }
 

@@ -1,32 +1,58 @@
+
 package com.lefarmico.trainingapp
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.viewpager2.widget.ViewPager2
+import com.lefarmico.trainingapp.adapters.ExerciseFragmentStateAdapter
+import com.lefarmico.trainingapp.databinding.ActivityMainBinding
 import com.lefarmico.trainingapp.fragments.ExerciseFragment
-import com.lefarmico.trainingapp.fragments.FragmentTypes
-import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private val pagerAdapter: ViewPagerFragmentStateAdapter by lazy { ViewPagerFragmentStateAdapter(this) }
+//    private val pagerAdapter: ViewPagerFragmentStateAdapter by lazy { ViewPagerFragmentStateAdapter(this) }
+    private lateinit var binding: ActivityMainBinding
+
+    private val presenter = ExercisePresenter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        createNewExercise()
-
-        ex_fab_button.setOnClickListener {
-            val curFragment = supportFragmentManager.primaryNavigationFragment
-            Toast.makeText(this, "current fragment is ${curFragment.toString() }", Toast.LENGTH_SHORT).show()
+        presenter.apply {
+            fragmentAdapter = ExerciseFragmentStateAdapter(this@MainActivity)
+            fragmentAdapter.presenter = this
         }
 
+        init()
+        createNewExercise()
     }
-    private fun createNewExercise(){
-        pager.offscreenPageLimit = 3
-        pager.adapter = pagerAdapter
-        pagerAdapter.add(FragmentTypes.EXERCISE, 30)
+    private fun init() {
+        binding.exFabButton.setOnClickListener {
+            val curFragment = binding.pager.currentItem
+            Toast.makeText(
+                this,
+                presenter.getItemData(curFragment),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
 
+        binding.pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                // Лаг анимации
+                if (position == presenter.getAllFragments().size - 1) {
+                    presenter.addFragment(ExerciseFragment())
+                }
+            }
+        })
+    }
+    private fun createNewExercise() {
+        presenter.setFragments(
+            listOf(ExerciseFragment(), ExerciseFragment())
+        )
+        binding.pager.offscreenPageLimit = 3
+        binding.pager.adapter = presenter.fragmentAdapter
     }
 }

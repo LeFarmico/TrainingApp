@@ -1,20 +1,16 @@
 package com.lefarmico.trainingapp.fragments
 
-import com.lefarmico.trainingapp.dataClasses.Exercise
-import java.lang.NullPointerException
+abstract class FragmentFactory {
+    abstract fun createFragment(): IExerciseFragmentTypes
 
-class FragmentFactory {
-
-    fun getFragment(type: FragmentTypes): IFragmentTypes?{
-        try {
-            if (type == FragmentTypes.EXERCISE)
-                return ExerciseFragment()
-        }catch (e: NullPointerException){
-            e.stackTrace
-        }
-        return null
+    companion object {
+        inline fun <reified T : IExerciseFragmentTypes> createFactory(): FragmentFactory =
+            when (T::class) {
+                ExerciseFragment::class -> ExerciseFragmentFactory()
+                else -> throw IllegalArgumentException()
+            }
     }
 }
-enum class FragmentTypes {
-    EXERCISE //
+class ExerciseFragmentFactory() : FragmentFactory() {
+    override fun createFragment(): IExerciseFragmentTypes = ExerciseFragment()
 }
