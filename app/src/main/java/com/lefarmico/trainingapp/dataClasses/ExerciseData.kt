@@ -1,13 +1,12 @@
 package com.lefarmico.trainingapp.dataClasses
 
-data class Exercise(
-    val exerciseName: String = "Exercise",
-    val defSetsCount: Int = 10,
-    val workoutSetsCount: List<ParamOfSet> = mutableListOf()
+data class ExerciseData(
+    val title: String = "Exercise",
+    val sets: List<SetTypesData> = mutableListOf()
 )
 
-sealed class ParamOfSet
-data class RepsSets(
+sealed class SetTypesData
+data class RepsType(
     val reps: Int = 10,
     val weight: Int = 20
-) : ParamOfSet()
+) : SetTypesData()

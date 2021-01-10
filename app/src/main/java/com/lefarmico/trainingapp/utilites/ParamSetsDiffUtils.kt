@@ -1,11 +1,11 @@
 package com.lefarmico.trainingapp.utilites
 
 import androidx.recyclerview.widget.DiffUtil
-import com.lefarmico.trainingapp.dataClasses.ParamOfSet
+import com.lefarmico.trainingapp.dataClasses.SetTypesData
 
 class ParamSetsDiffUtils(
-    private val oldList: List<ParamOfSet>,
-    private val newList: List<ParamOfSet>
+    private val oldList: List<SetTypesData>,
+    private val newList: List<SetTypesData>
 ) : DiffUtil.Callback() {
 
     override fun getOldListSize(): Int = oldList.size
